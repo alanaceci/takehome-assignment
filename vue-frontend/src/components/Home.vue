@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- PART 1: Pass in a "complete" prop here -->
-    <Instructions />
+    <Instructions v-bind:complete="true"/>
     <!-- PART 4: Modify the Show component to accept all of these props -->
     <Show
       v-for="show in shows"
@@ -10,6 +10,9 @@
       :name="show.name"
       :episodes_seen="show.episodes_seen"
     />
+    <br>
+    <form @submit="formSubmit"> <input v-model="name" placeholder="Add show name">
+    <button type="button"> Submit </button> </form>
   </div>
 </template>
 
@@ -30,7 +33,23 @@ export default {
         { id: 3, name: "Black Mirror", episodes_seen: 3 }
       ]
     };
-  }
+  },
+  methods: {
+            formSubmit(e) {
+                e.preventDefault();
+                let currentObj = this;
+                this.axios.post('http://127.0.0.1:8080/shows', {
+                    name: this.name,
+                    episodes_seen: 0
+                })
+                .then(function (response) {
+                    currentObj.output = response.data;
+                })
+                .catch(function (error) {
+                    currentObj.output = error;
+                });
+            }
+        }
 };
 </script>
 

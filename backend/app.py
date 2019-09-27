@@ -5,7 +5,6 @@ import mockdb.mockdb_interface as db
 
 app = Flask(__name__)
 
-
 def create_response(
     data: dict = None, status: int = 200, message: str = ""
 ) -> Tuple[Response, int]:
@@ -18,7 +17,6 @@ def create_response(
     IMPORTANT: data must be a dictionary where:
     - the key is the name of the type of data
     - the value is the data itself
-
     :param data <str> optional data
     :param status <int> optional status code, defaults to 200
     :param message <str> optional message
@@ -64,6 +62,29 @@ def delete_show(id):
 
 
 # TODO: Implement the rest of the API here!
+@app.route("/shows/<id>", methods=['GET'])
+def get_show_by_id(id):
+    if db.getById('shows', int(id)) is None:
+        return create_response(status=404, message="No show with this id exists")
+    return create_response({"shows": db.getById('shows', int(id))})
+
+@app.route("/shows", methods=['POST'])
+def create_new_show():
+    content = request.get_json()
+    if 'name' in content and 'episodes_seen' in content:
+        db.create('shows', content)
+        return create_response(message="Successfully added show", status=201)
+    else: 
+        return create_response(message="All attributes needed", status=422)
+
+@app.route("/shows/<id>", methods=["PUT"])
+def update_show_by_id(id):
+    print(id)
+    content = request.get_json()
+    if db.getById('shows', int(id)) is None:
+        return create_response(status=404, message="No show with this id exists")
+    db.updateById('shows', int(id), content)
+    return create_response(status=201, message="Successfully updated show")
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~

@@ -1,17 +1,23 @@
 <template>
-  <p>I'm a Counter!</p>
+<div>
+  {{count}}
+  <button v-on:click="count += 1"> + 1 </button>
+  <button v-on:click="count -= 1"> - 1 </button>
+</div> 
 </template>
 
 <script>
+import Vue from 'vue'
 export default {
-  data() {
+props: ['initialCounter'],
+data: function () {
     return {
-      count: 0
-    };
-  }
+        count: this.initialCounter
+    }
+}
 };
 </script>
 
 <style>
-</style>
 
+</style>
